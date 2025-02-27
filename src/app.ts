@@ -1,29 +1,19 @@
-import express, { type Express } from "express";
-import dotenv from "dotenv";
-import { WeatherController } from "./controllers/weatherController";
-import { WeatherService } from "./services/weatherService";
+import express from "express";
+import { config } from "./config";
+import { createWeatherRouter } from "./routes/weather";
+import { errorHandler } from "./middleware/errorHandler";
+import { notFound } from "./middleware/notFound";
 
-dotenv.config();
+export const createApp = () => {
+    if (!config.weather.apiKey) {
+        throw new Error("WEATHER_API_KEY environment variable is required");
+    }
 
-const app: Express = express();
+    const app = express();
+    app.use(express.json());
+    app.use("/weather", createWeatherRouter());
+    app.use(notFound);
+    app.use(errorHandler);
 
-if (!process.env.WEATHER_API_KEY) {
-    throw new Error("WEATHER_API_KEY environment variable is required");
-}
-
-const weatherService = new WeatherService({
-    apiKey: process.env.WEATHER_API_KEY,
-    baseUrl: "https://api.openweathermap.org/data/2.5",
-});
-
-const weatherController = new WeatherController(weatherService);
-
-app.use(express.json());
-
-app.get("/weather", weatherController.getWeather);
-
-app.use((req, res) => {
-    res.status(404).json({ error: "Not found" });
-});
-
-export default app;
+    return app;
+};

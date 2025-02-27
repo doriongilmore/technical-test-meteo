@@ -102,7 +102,7 @@ describe("WeatherController", () => {
                 .get("/weather")
                 .query({ city: "NonExistentCity" });
 
-            expect(response.status).toBe(400);
+            expect(response.status).toBe(404);
             expect(response.body.error).toBe('City "NonExistentCity" not found');
             expect(mockWeatherService.getWeather).toHaveBeenCalledWith(mockRequest);
         });

@@ -1,8 +1,11 @@
-import app from "./app";
+import dotenv from "dotenv";
+import { createApp } from "./app";
+import { config } from "./config";
 import { logger } from "./utils/logger";
 
-const port = process.env.PORT || 7000;
+dotenv.config();
 
-app.listen(port, () => {
-    logger.info(`Server is running on port ${port}`);
+const app = createApp();
+app.listen(config.port, () => {
+    logger.info(`Server is running on port ${config.port}`);
 });
