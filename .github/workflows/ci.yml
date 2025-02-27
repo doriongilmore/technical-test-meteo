@@ -32,10 +32,17 @@ jobs:
     - name: Type check
       run: npm run type-check
     
-    - name: Test
-      run: npm run test
+    - name: Test with coverage
+      run: npm run test:coverage
       env:
         WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+    
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report-node-${{ matrix.node-version }}
+        path: coverage/
+        retention-days: 30
     
     - name: Build
       run: npm run build

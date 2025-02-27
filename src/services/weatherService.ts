@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { WeatherRequest, WeatherResponse, WeatherServiceConfig } from "../types/weather";
 
 interface WeatherApiResponse {
@@ -56,12 +56,21 @@ export class WeatherService {
     }
 
     private buildErrorMessage(error: unknown, request: WeatherRequest): string {
-        if (axios.isAxiosError(error) && error.response?.status === 404) {
-            const location =
-                request.type === "city"
-                    ? `City "${request.city}"`
-                    : `Location at coordinates (${request.latitude}, ${request.longitude})`;
-            return `${location} not found`;
+        if (
+            error &&
+            typeof error === "object" &&
+            "isAxiosError" in error &&
+            error.isAxiosError
+        ) {
+            const axiosError = error as AxiosError;
+            if (axiosError.response?.status === 404) {
+                const location =
+                    request.type === "city"
+                        ? `City "${request.city}"`
+                        : `Location at coordinates (${request.latitude}, ${request.longitude})`;
+                return `${location} not found`;
+            }
+            return axiosError.message;
         }
         return error instanceof Error ? error.message : "Unknown error occurred";
     }

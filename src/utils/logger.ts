@@ -1,14 +1,19 @@
 /* eslint-disable no-console */
 export const logger = {
-    info: (message: string, ...args: unknown[]) => {
-        if (process.env.NODE_ENV !== "test") {
-            console.log(message, ...args);
-        }
+    info: (...args: unknown[]) => {
+        console.info(...args);
     },
-    error: (message: string, ...args: unknown[]) => {
-        console.error(message, ...args);
+    error: (...args: unknown[]) => {
+        console.error(...args);
     },
-    warn: (message: string, ...args: unknown[]) => {
-        console.warn(message, ...args);
+    warn: (...args: unknown[]) => {
+        console.warn(...args);
+    },
+    debug: (...args: unknown[]) => {
+        console.debug(...args);
+    },
+    log: (...args: unknown[]) => {
+        console.log(...args);
     },
 };
+/* eslint-enable no-console */
