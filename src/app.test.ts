@@ -8,8 +8,6 @@ jest.mock("./config", () => ({
         weather: {
             apiKey: "test-api-key",
             baseUrl: "https://api.openweathermap.org/data/2.5",
-            defaultUnits: "metric",
-            defaultLang: "fr",
         },
     },
 }));

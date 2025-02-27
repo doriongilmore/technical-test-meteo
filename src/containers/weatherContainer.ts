@@ -8,6 +8,10 @@ export interface WeatherContainer {
 }
 
 export const createWeatherContainer = (): WeatherContainer => {
+    if (!config.weather.apiKey) {
+        throw new Error("WEATHER_API_KEY environment variable is required");
+    }
+
     const weatherService = new WeatherService({
         apiKey: config.weather.apiKey,
         baseUrl: config.weather.baseUrl,

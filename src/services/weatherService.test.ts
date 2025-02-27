@@ -108,7 +108,7 @@ describe("WeatherService", () => {
             });
         });
 
-        it("should handle API errors", async () => {
+        it("should handle API errors for city not found", async () => {
             const request: WeatherRequest = {
                 type: "city",
                 city: "NonExistentCity",
@@ -118,7 +118,7 @@ describe("WeatherService", () => {
                 isAxiosError: true,
                 response: {
                     status: 404,
-                    data: { message: "City not found" },
+                    data: { message: "Requested location not found" },
                     statusText: "Not Found",
                     headers: {},
                     config: {},
@@ -129,6 +129,31 @@ describe("WeatherService", () => {
 
             await expect(service.getWeather(request)).rejects.toThrow(
                 'City "NonExistentCity" not found',
+            );
+        });
+
+        it("should handle API errors for coordinates not found", async () => {
+            const request: WeatherRequest = {
+                type: "coordinates",
+                latitude: 48.8566,
+                longitude: 2.3522,
+            };
+
+            const mockError = {
+                isAxiosError: true,
+                response: {
+                    status: 404,
+                    data: { message: "Requested location not found" },
+                    statusText: "Not Found",
+                    headers: {},
+                    config: {},
+                },
+            } as AxiosError;
+
+            mockedAxios.get.mockRejectedValue(mockError);
+
+            await expect(service.getWeather(request)).rejects.toThrow(
+                "Location at coordinates (48.8566, 2.3522) not found",
             );
         });
 

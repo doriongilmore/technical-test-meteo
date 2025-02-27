@@ -79,10 +79,19 @@ describe("WeatherController", () => {
             );
         });
 
-        it("should return 400 when invalid coordinates are provided", async () => {
+        it("should return 400 when invalid coordinates are provided - string", async () => {
             const response = await request(app)
                 .get("/weather")
                 .query({ lat: "invalid", lng: "2.3522" });
+
+            expect(response.status).toBe(400);
+            expect(response.body.error).toBe("Invalid coordinates format");
+        });
+
+        it("should return 400 when invalid coordinates are provided - object", async () => {
+            const response = await request(app)
+                .get("/weather")
+                .query({ lat: { lng: "3" }, lng: "2.3522" });
 
             expect(response.status).toBe(400);
             expect(response.body.error).toBe("Invalid coordinates format");

@@ -35,4 +35,11 @@ describe("Config", () => {
 
         expect(config.port).toBe(7000);
     });
+
+    it("should use default empty key when WEATHER_API_KEY is not set", () => {
+        delete process.env.WEATHER_API_KEY;
+        config = require("./index").config;
+
+        expect(config.weather.apiKey).toBe("");
+    });
 });
