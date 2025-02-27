@@ -36,6 +36,17 @@ describe("sumNumbersInJson", () => {
         ).toBe(5);
     });
 
+    it("should parse stringified numeric values", () => {
+        expect(
+            sumNumbersInJson({
+                a: "5",
+                b: true,
+                c: null,
+                d: 5,
+            }),
+        ).toBe(10);
+    });
+
     it("should handle deeply nested structures", () => {
         const input = {
             a: [1, { b: [2, { c: 3 }] }],
