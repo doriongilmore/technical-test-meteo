@@ -38,7 +38,7 @@ jobs:
         WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
     
     - name: Upload coverage reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-report-node-${{ matrix.node-version }}
         path: coverage/
