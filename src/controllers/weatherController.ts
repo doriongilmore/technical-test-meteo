@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { WeatherService } from "../services/weatherService";
+import { WeatherRequest } from "../types/weather";
 
 export class WeatherController {
     // eslint-disable-next-line no-unused-vars
@@ -9,15 +10,14 @@ export class WeatherController {
         try {
             const { city, lat, lng } = req.query;
 
-            if (city) {
-                const weather = await this.weatherService.getWeatherByCity(
-                    city as string,
-                );
-                res.json(weather);
-                return;
-            }
+            let request: WeatherRequest;
 
-            if (lat && lng) {
+            if (city) {
+                request = {
+                    type: "city",
+                    city: city as string,
+                };
+            } else if (lat && lng) {
                 const latitude = parseFloat(lat as string);
                 const longitude = parseFloat(lng as string);
 
@@ -26,17 +26,20 @@ export class WeatherController {
                     return;
                 }
 
-                const weather = await this.weatherService.getWeatherByCoordinates(
+                request = {
+                    type: "coordinates",
                     latitude,
                     longitude,
-                );
-                res.json(weather);
+                };
+            } else {
+                res.status(400).json({
+                    error: "Missing required parameters: either city or lat/lng must be provided",
+                });
                 return;
             }
 
-            res.status(400).json({
-                error: "Missing required parameters: either city or lat/lng must be provided",
-            });
+            const weather = await this.weatherService.getWeather(request);
+            res.json(weather);
         } catch (error) {
             if (error instanceof Error) {
                 res.status(400).json({ error: error.message });

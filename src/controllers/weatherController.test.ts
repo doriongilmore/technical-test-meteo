@@ -2,6 +2,7 @@ import request from "supertest";
 import express from "express";
 import { WeatherController } from "./weatherController";
 import { WeatherService } from "../services/weatherService";
+import { WeatherRequest, WeatherResponse } from "../types/weather";
 
 jest.mock("../services/weatherService");
 
@@ -22,26 +23,35 @@ describe("WeatherController", () => {
 
     describe("GET /weather", () => {
         it("should return weather by city", async () => {
-            const mockWeather = {
+            const mockRequest: WeatherRequest = {
+                type: "city",
+                city: "Paris",
+            };
+
+            const mockResponse: WeatherResponse = {
                 city: "Paris",
                 temperature: 15,
                 humidity: 82,
                 description: "Ciel partiellement nuageux",
             };
 
-            mockWeatherService.getWeatherByCity = jest
-                .fn()
-                .mockResolvedValue(mockWeather);
+            mockWeatherService.getWeather = jest.fn().mockResolvedValue(mockResponse);
 
             const response = await request(app).get("/weather").query({ city: "Paris" });
 
             expect(response.status).toBe(200);
-            expect(response.body).toEqual(mockWeather);
-            expect(mockWeatherService.getWeatherByCity).toHaveBeenCalledWith("Paris");
+            expect(response.body).toEqual(mockResponse);
+            expect(mockWeatherService.getWeather).toHaveBeenCalledWith(mockRequest);
         });
 
         it("should return weather by coordinates", async () => {
-            const mockWeather = {
+            const mockRequest: WeatherRequest = {
+                type: "coordinates",
+                latitude: 48.8566,
+                longitude: 2.3522,
+            };
+
+            const mockResponse: WeatherResponse = {
                 latitude: 48.8566,
                 longitude: 2.3522,
                 temperature: 15,
@@ -49,20 +59,15 @@ describe("WeatherController", () => {
                 description: "Ciel partiellement nuageux",
             };
 
-            mockWeatherService.getWeatherByCoordinates = jest
-                .fn()
-                .mockResolvedValue(mockWeather);
+            mockWeatherService.getWeather = jest.fn().mockResolvedValue(mockResponse);
 
             const response = await request(app)
                 .get("/weather")
                 .query({ lat: "48.8566", lng: "2.3522" });
 
             expect(response.status).toBe(200);
-            expect(response.body).toEqual(mockWeather);
-            expect(mockWeatherService.getWeatherByCoordinates).toHaveBeenCalledWith(
-                48.8566,
-                2.3522,
-            );
+            expect(response.body).toEqual(mockResponse);
+            expect(mockWeatherService.getWeather).toHaveBeenCalledWith(mockRequest);
         });
 
         it("should return 400 when no parameters are provided", async () => {
@@ -84,16 +89,22 @@ describe("WeatherController", () => {
         });
 
         it("should handle errors from weather service", async () => {
-            mockWeatherService.getWeatherByCity = jest
+            const mockRequest: WeatherRequest = {
+                type: "city",
+                city: "NonExistentCity",
+            };
+
+            mockWeatherService.getWeather = jest
                 .fn()
-                .mockRejectedValue(new Error("City not found"));
+                .mockRejectedValue(new Error('City "NonExistentCity" not found'));
 
             const response = await request(app)
                 .get("/weather")
                 .query({ city: "NonExistentCity" });
 
             expect(response.status).toBe(400);
-            expect(response.body.error).toBe("City not found");
+            expect(response.body.error).toBe('City "NonExistentCity" not found');
+            expect(mockWeatherService.getWeather).toHaveBeenCalledWith(mockRequest);
         });
     });
 });
