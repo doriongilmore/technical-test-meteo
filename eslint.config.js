@@ -4,10 +4,10 @@ import typescript from '@typescript-eslint/parser';
 import prettier from 'eslint-plugin-prettier';
 
 export default [
+  eslint.configs.recommended,
   {
     ignores: ['dist/**', 'coverage/**'],
   },
-  eslint.configs.recommended,
   {
     files: ['**/*.ts'],
     plugins: {
