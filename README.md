@@ -4,7 +4,7 @@ A Node.js application for weather-related functionality. This application provid
 
 ## Prerequisites
 
-- Node.js 22.x (LTS)
+- Node.js 18 and above (I developed on Node.js 22, but tests pass on 18/20/22)
 - npm
 
 ## Installation
@@ -26,7 +26,7 @@ cp .env.example .env
 ## Available Scripts
 
 - `npm run start`: Run the production build
-- `npm run dev`: Start development server with hot-reload
+- `npm run dev`: Start development server with hot-reload and esm option
 - `npm run build`: Build the TypeScript project
 - `npm run test`: Run all tests
 - `npm run test:watch`: Run tests in watch mode
@@ -87,12 +87,16 @@ Make sure to set up the `WEATHER_API_KEY` secret in your GitHub repository setti
 
 ```
 src/
-  ├── controllers/    # Request handlers
+  ├── config/        # Configuration
+  ├── containers/    # contains related services and controllers
+  ├── controllers/   # Request handlers
+  ├── middleware/    # list of API Middleware
+  ├── routes/        # list of API Routes
   ├── services/      # Business logic
   ├── types/         # TypeScript type definitions
   ├── utils/         # Utility functions
+  ├── app.ts         # Application configuration
   └── index.ts       # Application entry point
-```
 
 ### Possible Improvements
 
@@ -100,7 +104,10 @@ src/
 - Caching: We could add caching to avoid making repeated API calls for the same city/coordinates within a short time window. This would improve performance and reduce API usage.
 - Rate Limiting: We could add rate limiting to protect the API from abuse.
 - Better Error Handling: Currently, we're not handling all possible API error cases. We could add more specific error types and handling.
+- custom API only returns data requested by the test, while the original API returns more data, so we could return more complete responses, maybe have a parameter to choose the properties we want
 - Weather Units: We could make the units ("metric") configurable through the service config.
 - Language: Similarly, we could make the language ("fr") configurable.
+- Documentation: We could add API documentation using something like Postman or Swagger.
 - Logging: We could add logging to track the usage of the API and help identify issues.
+- CD : current workflow is only CI, there is no deployment, and even if the CI builds the app, it doesn't actually test the generated build. (current automated tests run TS directly)
 
