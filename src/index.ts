@@ -1,9 +1,6 @@
-import dotenv from "dotenv";
-import { createApp } from "./app";
 import { config } from "./config";
+import { createApp } from "./app";
 import { logger } from "./utils/logger";
-
-dotenv.config();
 
 const app = createApp();
 app.listen(config.port, () => {

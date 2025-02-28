@@ -1,5 +1,9 @@
 import { AppConfig } from "./index";
 
+jest.mock("dotenv", () => ({
+    config: jest.fn(),
+}));
+
 describe("Config", () => {
     const originalEnv = process.env;
     let config: AppConfig;

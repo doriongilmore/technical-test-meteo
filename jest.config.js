@@ -7,6 +7,7 @@ export default {
   clearMocks: true,
   resetMocks: true,
   restoreMocks: true,
+  moduleFileExtensions: ["js", "ts", "json", "node"],
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.test.ts',
