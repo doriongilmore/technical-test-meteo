@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "nodemon --exec 'NODE_OPTIONS=\"--loader ts-node/esm\" ts-node src/index.ts'",
+    "dev": "nodemon --ext 'ts,json' --exec 'NODE_OPTIONS=\"--loader ts-node/esm\" ts-node src/index.ts'",
     "build": "tsc",
     "test": "npm run type-check && jest",
     "test:watch": "npm run test -- --watch",
